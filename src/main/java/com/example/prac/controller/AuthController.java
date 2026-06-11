@@ -8,10 +8,13 @@ import com.example.prac.dto.LoginRequest;
 import com.example.prac.dto.SignupRequest;
 import com.example.prac.dto.VerifyOtpRequest;
 import com.example.prac.model.Pu;
+import com.example.prac.security.JwtService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    @Autowired
+    JwtService jwtservice;
 
     @Autowired
     AuthService authservice;
@@ -33,5 +36,10 @@ public class AuthController {
             @RequestBody LoginRequest req){
 
         return authservice.login(req);
+
     }
+    @GetMapping("/test")
+public String test(@RequestParam String token){
+    return jwtservice.extractEmail(token);
+}
 }

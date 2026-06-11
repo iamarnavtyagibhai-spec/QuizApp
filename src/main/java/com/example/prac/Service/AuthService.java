@@ -15,6 +15,7 @@ import com.example.prac.model.User;
 import com.example.prac.repository.PuRepository;
 import com.example.prac.repository.UserRepository;
 import com.example.prac.model.Role;
+import com.example.prac.security.JwtService;
 
 @Service
 public class AuthService {
@@ -28,6 +29,8 @@ public class AuthService {
     OtpService otpservice;
     @Autowired
     PuRepository purepo;
+    @Autowired
+    JwtService jwtservice;
 
     public Pu signupRequest(SignupRequest sq){
         if(userrepo.findByEmail(sq.getEmail()).isPresent()){
@@ -89,7 +92,8 @@ public class AuthService {
    if ((passwordencoder.matches(
             a,
             det.getPassword()))){
-    return "login success";
+     String token =jwtservice.generateToken(det.getEmail());
+    return token;
 
    }
    return "login failed";
