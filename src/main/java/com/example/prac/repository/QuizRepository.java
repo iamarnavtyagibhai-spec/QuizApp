@@ -8,7 +8,7 @@ import com.example.prac.model.Quiz;
 
 
 public interface  QuizRepository extends MongoRepository<Quiz,String> {
-    public List<Quiz> findByQuizname(String quiz_name);
+    public List<Quiz> findByQuiznameContainingIgnoreCase(String quizname);
     public  List<Quiz> findByOwneremail(String ownerEmail);
    
 

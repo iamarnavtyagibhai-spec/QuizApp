@@ -15,6 +15,7 @@ import com.example.prac.model.Quiz;
 import com.example.prac.model.User;
 import com.example.prac.repository.QuizRepository;
 import com.example.prac.repository.UserRepository;
+import java.util.UUID;
 
 @Service
 public class QuizService {
@@ -45,6 +46,11 @@ public class QuizService {
     public Quiz addAdmin(String id,String email){
         Optional<User> e= userrepo.findByEmail(email);
          Quiz q = quizrepository.findById(id).orElseThrow();
+         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if(!q.getOwneremail().equals(auth.getName())){
+        throw new RuntimeException("Only owner can add admin");
+}
         if (e.isEmpty()){
             System.out.println("user not found");
             throw new RuntimeException("user not found");
@@ -62,31 +68,72 @@ public class QuizService {
 
     String cur= auth.getName();
     que.setCreatedBy(cur);
+     Quiz a = quizrepository.findById(id).orElseThrow(() -> new RuntimeException("Quiz not found"));
+     if (!a.getAdmin().contains(cur) && !a.getOwneremail().equals(cur)){
+        throw new RuntimeException("Not authorized to this quiz");
 
-          Quiz q = quizrepository.findById(id).orElseThrow();
-           q.getQuestions().add(que);
+    }
+     que.setId(UUID.randomUUID().toString());
+
+     
+           a.getQuestions().add(que);
 
 
 
 
-          return  quizrepository.save(q);
+          return  quizrepository.save(a);
 
     }
     public void deleteQuiz(String id) {
 
+        
+
     Quiz quiz = quizrepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Quiz not found"));
+            .orElseThrow(() -> new RuntimeException("you are not allowed"));
+              Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if(!quiz.getOwneremail().equals(auth.getName())){
+        throw new RuntimeException("Only owner can add admin");
+}
 
     quizrepository.delete(quiz);
 }
 public Quiz deleteQuestion(String quizId, String questionId) {
 
+
     Quiz quiz = quizrepository.findById(quizId)
-            .orElseThrow(() -> new RuntimeException("Quiz not found"));
+            .orElseThrow(() -> new RuntimeException("cannot delete quiz"));
+          Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if(!quiz.getOwneremail().equals(auth.getName())){
+        throw new RuntimeException("Only owner can add admin");
+}
 
     quiz.getQuestions()
             .removeIf(q -> q.getId().equals(questionId));
 
     return quizrepository.save(quiz);
 }
+public Quiz updateQuiz(CreateQuizRequest req,String id){
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String currentEmail = authentication.getName();
+    Quiz a = quizrepository.findById(id).orElseThrow(() -> new RuntimeException("You are not autorize"));
+    if (!a.getAdmin().contains(currentEmail) && !a.getOwneremail().equals(currentEmail)){
+        throw new RuntimeException("Not authorized to this quiz");
+    }
+    a.setQuizname(req.getQuizname());
+    a.setDescription(req.getDescription());
+    a.setStarttime(req.getStarttime());
+    a.setEndtime(req.getEndtime());
+    return quizrepository.save(a);
+
+}
+
+
+
+
+
+
+
+
 }
