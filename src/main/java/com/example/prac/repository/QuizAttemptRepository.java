@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.example.prac.model.QuizAttempt;
 
 public interface QuizAttemptRepository extends MongoRepository<QuizAttempt, String> {
-    public QuizAttempt findByUserEmailandQuizId(String email,String quizId);
+    public QuizAttempt findByUserEmailAndQuizId(String email,String quizId);
     public List<QuizAttempt> findByQuizIdOrderByScoreDescAttemptedAtAsc(String quizId);
-    
+
 
 
 }

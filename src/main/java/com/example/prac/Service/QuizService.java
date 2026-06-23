@@ -249,7 +249,7 @@ return res;
 }
 public void duplicateAttempt(String quizId){
     String email =SecurityContextHolder.getContext().getAuthentication().getName();
-    if (quizAttemptrepository.findByUserEmailandQuizId(email,quizId)!=null){
+    if (quizAttemptrepository.findByUserEmailAndQuizId(email,quizId)!=null){
         throw new RuntimeException("You have already attempted this quiz");
     }
    
@@ -285,4 +285,3 @@ public List<LeaderboardResponse> leaderboard(String quizId){
 
 
 
-}
