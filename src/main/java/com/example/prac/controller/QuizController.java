@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.prac.Service.QuizService;
 import com.example.prac.dto.CreateQuizRequest;
+import com.example.prac.dto.LeaderboardResponse;
+import com.example.prac.dto.QuizResultResponse;
+import com.example.prac.dto.SubmitQuizRequest;
 import com.example.prac.model.Question;
 import com.example.prac.model.Quiz;
 import com.example.prac.repository.QuizRepository;
@@ -84,9 +87,31 @@ public List<Quiz> findAlldata(){
 public List<Quiz> searchQuiz(@PathVariable String name) {
     return repo.findByQuiznameContainingIgnoreCase(name);
 }
-
 @GetMapping("/{id}")
-public Optional<Quiz> searchQuizById(@PathVariable String id) {
-    return repo.findById(id);
+public Quiz searchQuizById(@PathVariable String id) {
+    return repo.findById(id)
+            .orElseThrow(() -> new RuntimeException("Quiz not found"));
 }
+@PostMapping("/submit/{quizId}")
+public QuizResultResponse submitQuiz(
+        @PathVariable String quizId,
+        @RequestBody SubmitQuizRequest request) {
+
+    return quizservice.submitQuiz(quizId, request);
+}
+@GetMapping("/start/{quizId}")
+public Quiz startQuiz(@PathVariable String quizId) {
+
+    quizservice.duplicateAttempt(quizId);
+
+    return quizservice.getQuiz(quizId);
+}
+@GetMapping("/leaderboard/{quizId}")
+public List<LeaderboardResponse> leaderboard(
+        @PathVariable String quizId) {
+
+    return quizservice.leaderboard(quizId);
+}
+
+
 }
