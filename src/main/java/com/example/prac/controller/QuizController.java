@@ -1,9 +1,9 @@
 package com.example.prac.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,7 +33,16 @@ public class QuizController {
     @Autowired
     QuizRepository repo;
 
+   @GetMapping("/my")
+public List<Quiz> getMyQuizzes() {
+        String email = SecurityContextHolder
+            .getContext()
+            .getAuthentication().getName();
 
+   
+
+    return quizservice.getMyQuizzes(email);
+}
 
 
     @PostMapping("/create")
@@ -111,6 +120,13 @@ public List<LeaderboardResponse> leaderboard(
         @PathVariable String quizId) {
 
     return quizservice.leaderboard(quizId);
+}
+@GetMapping("/my/search")
+public List<Quiz> searchMyQuiz(@RequestParam String keyword) {
+     String email = SecurityContextHolder
+            .getContext()
+            .getAuthentication().getName();
+    return quizservice.searchMyQuiz(email,keyword);
 }
 
 

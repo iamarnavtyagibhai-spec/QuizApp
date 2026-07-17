@@ -275,6 +275,17 @@ public List<LeaderboardResponse> leaderboard(String quizId){
     return quizrepository.findById(quizId)
             .orElseThrow(() -> new RuntimeException("Quiz not found"));
 }
+public List<Quiz> getMyQuizzes(String email){ 
+    List<Quiz> a= quizrepository.findByOwneremail(email);
+    return a;
+
+}
+ public List<Quiz>  searchMyQuiz(String keyword,String email){
+     List<Quiz> b= quizrepository.findByOwneremailAndQuiznameContainingIgnoreCase( email,keyword);
+      return b;
+
+
+ }
 }
 
 
