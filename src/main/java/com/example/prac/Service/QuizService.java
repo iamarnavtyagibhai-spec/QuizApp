@@ -280,7 +280,7 @@ public List<Quiz> getMyQuizzes(String email){
     return a;
 
 }
- public List<Quiz>  searchMyQuiz(String keyword,String email){
+ public List<Quiz>  searchMyQuiz(String email,String keyword){
      List<Quiz> b= quizrepository.findByOwneremailAndQuiznameContainingIgnoreCase( email,keyword);
       return b;
 
